@@ -18,14 +18,15 @@ Create the `showPage` function
 This function will create and insert/append the elements needed to display a "page" of nine students
 */
 const showPage = (list, page) => {
-   const startIndex = (page * list.length) - list.length;
-   const endIndex = page * list.length;
+   const startIndex = (page * 9) - 9;
+   const endIndex = page * 9;
    let studentList = document.querySelector('.student-list');
-   studentList.innerHTML = '';
+   studentList.innerHTML = "";
+   let studentItem = '';
    
    for (let i = 0; i < list.length; i++) {
       if ( i  >= startIndex && i < endIndex ) {
-            studentList += `
+            studentItem += `
                <li class=\"student-item cf\">
                   <div class=\"student-details\">
                      <img class=\"avatar\" src=${list[i].picture.medium} alt=\"Profile Picture\">
@@ -39,7 +40,8 @@ const showPage = (list, page) => {
             `;
       }
    }
-   document.querySelector('.student-list').insertAdjacentHTML('beforeend', studentList);
+
+   studentList.insertAdjacentHTML('beforeend', studentItem);
 }
 
 
@@ -47,8 +49,33 @@ const showPage = (list, page) => {
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
 */
+const addPagination = (list) => {
+   const numberOfPages = Math.ceil(list.length/9);
+   const linkList = document.querySelector('.link-list');
+   linkList.innerHTML = '';
+   let button = '';
 
+   for (let i = 1; i <= numberOfPages; i++) {
+      button += `
+         <li>
+            <button type=\"button\"> ${i} </button>
+         </li>
+      `;
+   }
+
+   linkList.insertAdjacentHTML('beforeend', button);
+   document.querySelector('button').className = 'active';
+
+   linkList.addEventListener('click', (e) => {
+      if (e.target.tagName == "BUTTON") {
+         document.querySelector('.active').className = '';
+         e.target.className = 'active';
+         showPage(list, e.target.textContent);
+      }
+   });
+}
 
 
 // Call functions
 showPage(data, 1);
+addPagination(data);
