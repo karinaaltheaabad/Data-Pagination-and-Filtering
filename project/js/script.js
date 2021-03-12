@@ -105,7 +105,7 @@ function displaySearchBar() {
  */
 const sortList = (searchInput, list) => {
    let filteredStudents = [];
-   let body = document.querySelector('body');
+   let studentList = document.querySelector('.student-list');
 
    //for each student in list, change the className to match if the search input is not empty and includes a part of a
    //current students data
@@ -118,10 +118,12 @@ const sortList = (searchInput, list) => {
 
    if (filteredStudents.length == 0) {
       let noResult = '';
-      noResult += `<h1>No Results Found</h1>`;
-      body.insertAdjacentHTML('beforeend', noResult);
+      noResult += `<p style=\"font-size: 50px; color: black; text-align: center;\">No Results Found</p>`;
+      studentList.innerHTML = noResult; 
    } else {
-      console.log(JSON.stringify(filteredStudents));
+      //JSON.stringify allows filteredStudents objects to strings 
+      // [object Object] to {name: first="karina" last="abad" etc}
+      JSON.stringify(filteredStudents);
       showPage(filteredStudents, 1);
       addPagination(filteredStudents);
    }
