@@ -13,10 +13,11 @@ For assistance:
 
 
 
-/*
-Create the `showPage` function
-This function will create and insert/append the elements needed to display a "page" of nine students
-*/
+/**
+ * This function will create and insert/append the elements needed to display a "page" of nine students
+ * param: list (list of objects/people from data.js), page (represent page number)
+ * return: none, displays the array of students taken from the list
+ */
 const showPage = (list, page) => {
    const startIndex = (page * 9) - 9;
    const endIndex = page * 9;
@@ -45,10 +46,12 @@ const showPage = (list, page) => {
 }
 
 
-/*
-Create the `addPagination` function
-This function will create and insert/append the elements needed for the pagination buttons
-*/
+/**
+ * This function will create and insert/append the elements needed for the pagination buttons
+ * param: list (array of student objects from data.js)
+ * return: none, displays the page numbers on the bottom of the screen, and calls showPage to display 
+ * data from list. 
+ */
 const addPagination = (list) => {
    const numberOfPages = Math.ceil(list.length/9);
    const linkList = document.querySelector('.link-list');
@@ -75,7 +78,69 @@ const addPagination = (list) => {
    });
 }
 
+/**
+ * displays search bar on header 
+ * param: none
+ * return: none
+ */
+function displaySearchBar() {
+   const header = document.querySelector('.header');
+   let searchBar = '';
+
+   searchBar += `
+      <label for=\"search\" class=\"student-search\">
+         <span>Search by name</span>
+         <input id=\"search\" placeholder=\"Search by name...\">
+         <button type=\"button\"><img src=\"img/icn-search.svg\" alt=\"Search icon\"></button>
+      </label>
+   `;
+
+   header.insertAdjacentHTML('beforeend', searchBar);
+}
+
+/**
+ * sorts through list of persons from input and sets classname to match
+ * @param {*} searchInput 
+ * @param {*} list 
+ */
+const sortList = (searchInput, list) => {
+   let filteredStudents = [];
+   let body = document.querySelector('body');
+
+   //for each student in list, change the className to match if the search input is not empty and includes a part of a
+   //current students data
+   for (let i = 0; i < list.length; i++) {
+      let student = `${list[i].name.first} ${list[i].name.last}\n`;
+      if (searchInput.value.length != 0 && student.toLowerCase().includes(searchInput.value.toLowerCase())) {
+        filteredStudents.push(list[i]);
+      }
+   }
+
+   if (filteredStudents.length == 0) {
+      let noResult = '';
+      noResult += `<h1>No Results Found</h1>`;
+      body.insertAdjacentHTML('beforeend', noResult);
+   } else {
+      console.log(JSON.stringify(filteredStudents));
+      showPage(filteredStudents, 1);
+      addPagination(filteredStudents);
+   }
+}
 
 // Call functions
 showPage(data, 1);
 addPagination(data);
+displaySearchBar();
+
+const input = document.querySelector('#search');
+const button = document.querySelector('.student-search button');
+
+button.addEventListener('click', (e) => {
+   e.preventDefault();
+   sortList(input, data);
+});
+
+input.addEventListener('keyup', () => {
+   sortList(input, data);
+});
+
